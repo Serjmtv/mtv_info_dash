@@ -1,0 +1,182 @@
+{
+	"name": "tokens",
+	"displayName": "Tokens: лимиты агентов и проекты",
+	"description": "Остаток лимитов Claude Code и Codex, расход токенов и состояние проектов.",
+	"version": "0.2.4",
+	"publisher": "serjmtv",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Serjmtv/mtv_info_dash.git"
+	},
+	"engines": {
+		"vscode": "^1.90.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"main": "./extension.js",
+	"activationEvents": [
+		"onStartupFinished"
+	],
+	"contributes": {
+		"commands": [
+			{
+				"command": "tokens.refresh",
+				"title": "Обновить",
+				"category": "Tokens",
+				"icon": "$(refresh)"
+			},
+			{
+				"command": "tokens.openDashboard",
+				"title": "Открыть дашборд",
+				"category": "Tokens",
+				"icon": "$(dashboard)"
+			},
+			{
+				"command": "tokens.openStatus",
+				"title": "Открыть STATUS.md",
+				"category": "Tokens"
+			},
+			{
+				"command": "tokens.createStatus",
+				"title": "Создать STATUS.md по шаблону",
+				"category": "Tokens"
+			},
+			{
+				"command": "tokens.openProjectWindow",
+				"title": "Открыть в новом окне",
+				"category": "Tokens"
+			},
+			{
+				"command": "tokens.openTerminal",
+				"title": "Открыть терминал в папке",
+				"category": "Tokens"
+			},
+			{
+				"command": "tokens.stopAllChats",
+				"title": "Остановить все чаты Claude и Codex",
+				"category": "Tokens",
+				"icon": "$(debug-stop)"
+			}
+		],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "tokens",
+					"title": "Tokens",
+					"icon": "media/gauge.svg"
+				}
+			]
+		},
+		"views": {
+			"tokens": [
+				{
+					"id": "tokens.limits",
+					"name": "Лимиты",
+					"type": "webview"
+				},
+				{
+					"id": "tokens.projects",
+					"name": "Проекты"
+				},
+				{
+					"id": "tokens.activity",
+					"name": "Активность агентов"
+				}
+			]
+		},
+		"menus": {
+			"view/title": [
+				{
+					"command": "tokens.refresh",
+					"when": "view == tokens.limits",
+					"group": "navigation"
+				},
+				{
+					"command": "tokens.openDashboard",
+					"when": "view == tokens.limits",
+					"group": "navigation"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "tokens.openProjectWindow",
+					"when": "view == tokens.projects && viewItem =~ /^project/"
+				},
+				{
+					"command": "tokens.openTerminal",
+					"when": "view == tokens.projects && viewItem =~ /^project/"
+				},
+				{
+					"command": "tokens.createStatus",
+					"when": "view == tokens.projects && viewItem == project-nostatus"
+				}
+			],
+			"commandPalette": [
+				{
+					"command": "tokens.openStatus",
+					"when": "false"
+				},
+				{
+					"command": "tokens.createStatus",
+					"when": "false"
+				},
+				{
+					"command": "tokens.openProjectWindow",
+					"when": "false"
+				},
+				{
+					"command": "tokens.openTerminal",
+					"when": "false"
+				}
+			]
+		},
+		"configuration": {
+			"title": "Tokens",
+			"properties": {
+				"tokens.projectsRoot": {
+					"type": "string",
+					"default": "",
+					"description": "Папка с проектами. Пусто: папка, открытая в VS Code (или папка с открытым .code-workspace). Если в ней есть projects.code-workspace, проекты берутся из него."
+				},
+				"tokens.warnPercent": {
+					"type": "number",
+					"default": 80,
+					"description": "С какого процента лимит считается «мало»."
+				},
+				"tokens.criticalPercent": {
+					"type": "number",
+					"default": 95,
+					"description": "С какого процента лимит считается «почти исчерпан»."
+				},
+				"tokens.notifications": {
+					"type": "boolean",
+					"default": true,
+					"description": "Предупреждать, когда лимит переходит порог."
+				},
+				"tokens.claudeRefreshMinutes": {
+					"type": "number",
+					"default": 5,
+					"minimum": 0,
+					"description": "Как часто обновлять лимиты Claude: расширение запускает официальный claude.exe -p \"/usage\" (без запроса к модели). 0 — не обновлять, тогда цифры свежие только после /usage в Claude Code."
+				}
+			}
+		}
+	},
+	"devDependencies": {
+		"esbuild": "^0.28.2",
+		"motion": "^14.13.0",
+		"react": "^19.3.1",
+		"react-dom": "^19.3.1"
+	},
+	"scripts": {
+		"build": "esbuild webview/main.jsx --bundle --format=iife --jsx=automatic --target=chrome120 --outfile=media/webview.js --define:process.env.NODE_ENV=\\\"production\\\" --minify",
+		"watch": "esbuild webview/main.jsx --bundle --format=iife --jsx=automatic --target=chrome120 --outfile=media/webview.js --define:process.env.NODE_ENV=\\\"production\\\" --sourcemap --watch"
+	},
+	"__metadata": {
+		"installedTimestamp": 1794519025081,
+		"targetPlatform": "undefined",
+		"size": 443337
+	}
+}

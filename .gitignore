@@ -1,0 +1,11 @@
+# build output: the bundle is rebuilt by `npm run build`, packages go to GitHub Releases
+node_modules/
+media/webview.js
+media/webview.css
+media/webview.js.map
+*.vsix
+
+# personal working notes of the author (projects, paths, limits, agent logs) — not for the public repo
+docs/
+AGENTS.md
+CLAUDE.md
